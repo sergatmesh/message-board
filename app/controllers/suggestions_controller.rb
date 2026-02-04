@@ -2,7 +2,6 @@ class SuggestionsController < ApplicationController
   include StoryFinder
 
   before_action :find_story!, only: [:new, :create]
-  before_action :require_logged_in_user, only: [:new]
   before_action :show_title_h1, only: [:new]
 
   def create

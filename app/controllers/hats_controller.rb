@@ -1,7 +1,6 @@
 # typed: false
 
 class HatsController < ApplicationController
-  before_action :require_logged_in_user, except: [:index]
   before_action :show_title_h1
   before_action :find_hat!, only: [:doff, :doff_by_user, :edit, :update_in_place, :update_by_recreating]
   before_action :only_hat_user_or_moderator, only: [:doff, :doff_by_user]

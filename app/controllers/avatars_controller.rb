@@ -1,8 +1,6 @@
 # typed: false
 
 class AvatarsController < ApplicationController
-  before_action :require_logged_in_user, only: [:expire]
-
   ALLOWED_SIZES = [16, 32, 100, 200].freeze
 
   CACHE_DIR = Rails.public_path.join("avatars/").to_s.freeze
