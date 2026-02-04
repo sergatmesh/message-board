@@ -129,7 +129,7 @@ fi
 # ─── Phase 1b: Install rbenv + Ruby ──────────────────────────────────────────
 info "Installing rbenv and Ruby $RUBY_VERSION (this will take a while)..."
 
-sudo -u "$DEPLOY_USER" bash <<'RBENV_SCRIPT'
+sudo -u "$DEPLOY_USER" RUBY_VERSION="$RUBY_VERSION" bash <<'RBENV_SCRIPT'
 set -euo pipefail
 
 # Install rbenv
