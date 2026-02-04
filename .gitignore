@@ -57,3 +57,5 @@ storage/
 .agents/
 .claude/
 .idea/
+
+.env
