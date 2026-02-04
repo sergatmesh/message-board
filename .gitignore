@@ -56,4 +56,4 @@ storage/
 # claude code related files
 .agents/
 .claude/
-
+.idea/
