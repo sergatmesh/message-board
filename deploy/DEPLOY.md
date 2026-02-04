@@ -64,6 +64,7 @@ The script prompts for these values interactively if not set as environment vari
 | `SMTP_PORT` | SMTP port | `587` |
 | `SMTP_USERNAME` | SES SMTP username | (from SES credentials) |
 | `SMTP_PASSWORD` | SES SMTP password | (from SES credentials) |
+| `LOBSTERS_REPO` | Git repository URL (default: upstream Lobsters) | `https://github.com/you/lobsters-fork.git` |
 
 Or export them before running:
 
@@ -76,6 +77,7 @@ export SMTP_HOST="email-smtp.us-east-1.amazonaws.com"
 export SMTP_PORT="587"
 export SMTP_USERNAME="AKIAIOSFODNN7EXAMPLE"
 export SMTP_PASSWORD="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+export LOBSTERS_REPO="https://github.com/you/lobsters-fork.git"  # optional, defaults to upstream
 sudo -E ./deploy/setup.sh
 ```
 

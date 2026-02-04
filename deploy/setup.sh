@@ -16,6 +16,7 @@
 #   SMTP_PORT           - SES SMTP port (587)
 #   SMTP_USERNAME       - SES SMTP username
 #   SMTP_PASSWORD       - SES SMTP password
+#   LOBSTERS_REPO       - Git repository URL (default: https://github.com/lobsters/lobsters.git)
 #
 set -euo pipefail
 
@@ -55,6 +56,7 @@ prompt_var SMTP_HOST           "SMTP host (e.g. email-smtp.us-east-1.amazonaws.c
 prompt_var SMTP_PORT           "SMTP port" "587"
 prompt_var SMTP_USERNAME       "SMTP username (leave blank to skip)" ""
 prompt_var SMTP_PASSWORD       "SMTP password (leave blank to skip)" ""
+prompt_var LOBSTERS_REPO       "Git repository URL" "https://github.com/lobsters/lobsters.git"
 
 APP_DIR="/srv/lobsters"
 RUBY_VERSION="4.0.0"
@@ -162,7 +164,7 @@ chown "$DEPLOY_USER":"$DEPLOY_USER" "$APP_DIR"
 
 # Clone repo
 if [[ ! -d "$APP_DIR/.git" ]]; then
-  sudo -u "$DEPLOY_USER" git clone https://github.com/lobsters/lobsters.git "$APP_DIR"
+  sudo -u "$DEPLOY_USER" git clone "$LOBSTERS_REPO" "$APP_DIR"
 else
   info "Repository already cloned, pulling latest..."
   sudo -u "$DEPLOY_USER" git -C "$APP_DIR" pull
