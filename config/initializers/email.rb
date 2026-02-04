@@ -1,6 +1,7 @@
 # typed: false
 
 if Rails.env.production?
+  ActionMailer::Base.delivery_method = :smtp
   ActionMailer::Base.smtp_settings = {
     address: ENV.fetch("SMTP_HOST", "127.0.0.1"),
     port: Integer(ENV.fetch("SMTP_PORT", 25)),
