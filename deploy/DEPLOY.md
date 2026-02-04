@@ -45,7 +45,7 @@ SSH into the instance and run:
 
 ```bash
 # Upload or clone the repo
-git clone https://github.com/lobsters/lobsters.git
+git clone <repo name here>
 cd lobsters
 
 # Run the setup script
