@@ -59,6 +59,21 @@ prompt_var SMTP_PASSWORD       "SMTP password (leave blank to skip)" ""
 prompt_var LOBSTERS_REPO       "Git repository URL" "https://github.com/lobsters/lobsters.git"
 
 APP_DIR="/srv/lobsters"
+
+# ─── Input validation ─────────────────────────────────────────────────────────
+# Reject characters that could break sed, SQL, or Ruby string interpolation
+validate_safe() {
+  local var_name="$1" value="${!1}"
+  if [[ "$value" =~ [\'\"\|\`\$\;\\\&] ]]; then
+    error "$var_name contains unsafe characters (quotes, pipes, backticks, \$, semicolons, backslashes, or ampersands are not allowed)"
+  fi
+}
+
+validate_safe LOBSTERS_DOMAIN
+validate_safe LOBSTERS_SITE_NAME
+validate_safe LOBSTERS_DB_PASS
+validate_safe LOBSTERS_ADMIN_USER
+
 RUBY_VERSION="4.0.0"
 DEPLOY_USER="lobsters"
 
@@ -87,7 +102,11 @@ apt-get install -y -qq \
 
 # MariaDB 11
 info "Installing MariaDB..."
-curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | bash -s -- --mariadb-server-version=mariadb-11.4
+MARIADB_SETUP_SCRIPT=$(mktemp)
+curl -sS -o "$MARIADB_SETUP_SCRIPT" https://downloads.mariadb.com/MariaDB/mariadb_repo_setup
+chmod +x "$MARIADB_SETUP_SCRIPT"
+bash "$MARIADB_SETUP_SCRIPT" --mariadb-server-version=mariadb-11.4
+rm -f "$MARIADB_SETUP_SCRIPT"
 apt-get update -qq
 apt-get install -y -qq mariadb-server mariadb-client libmariadb-dev
 
@@ -258,7 +277,6 @@ if [[ ! -f "$APP_DIR/config/master.key" ]]; then
   "
 fi
 RAILS_MASTER_KEY=$(cat "$APP_DIR/config/master.key")
-info "Master key: $RAILS_MASTER_KEY (save this somewhere safe!)"
 
 # ─── Phase 4: Configuration ──────────────────────────────────────────────────
 info "Phase 4: Applying configuration..."
@@ -406,21 +424,22 @@ info "Cache expiration cron installed."
 # ─── Phase 8: Create admin user ──────────────────────────────────────────────
 info "Phase 8: Creating admin user '${LOBSTERS_ADMIN_USER}'..."
 
+ADMIN_PASSWORD=$(openssl rand -base64 18)
+
 sudo -u "$DEPLOY_USER" bash -c "
   export PATH=\"\$HOME/.rbenv/bin:\$HOME/.rbenv/shims:\$PATH\"
   eval \"\$(rbenv init - bash)\"
   cd '$APP_DIR'
   set -a; source .env; set +a
-  bin/rails runner \"
+  ADMIN_PASS='$ADMIN_PASSWORD' bin/rails runner \"
     u = User.new
-    u.username = '${LOBSTERS_ADMIN_USER}'
+    u.username = ENV.fetch('LOBSTERS_ADMIN_USER', '${LOBSTERS_ADMIN_USER}')
     u.email = '${LOBSTERS_ADMIN_USER}@${LOBSTERS_DOMAIN}'
-    u.password = 'changeme123'
-    u.password_confirmation = 'changeme123'
+    u.password = ENV['ADMIN_PASS']
+    u.password_confirmation = ENV['ADMIN_PASS']
     u.is_admin = true
     u.is_moderator = true
     u.save!
-    puts 'Admin user created: ${LOBSTERS_ADMIN_USER} / changeme123'
   \"
 "
 
@@ -436,10 +455,19 @@ else
   info "Visit: https://${LOBSTERS_DOMAIN}"
 fi
 echo ""
-info "Admin login: ${LOBSTERS_ADMIN_USER} / changeme123"
-warn "CHANGE THE ADMIN PASSWORD IMMEDIATELY after first login!"
+info "Admin login: ${LOBSTERS_ADMIN_USER}"
+info "Admin password has been written to: /root/lobsters-credentials.txt"
+warn "Retrieve the credentials from that file and then delete it."
 echo ""
-info "Master key (save this!): ${RAILS_MASTER_KEY}"
+info "Master key and admin password saved to: /root/lobsters-credentials.txt"
+
+# Write credentials to a root-only file
+cat > /root/lobsters-credentials.txt <<CREDS
+RAILS_MASTER_KEY=${RAILS_MASTER_KEY}
+ADMIN_USERNAME=${LOBSTERS_ADMIN_USER}
+ADMIN_PASSWORD=${ADMIN_PASSWORD}
+CREDS
+chmod 600 /root/lobsters-credentials.txt
 echo ""
 info "Useful commands:"
 info "  systemctl status lobsters    — check Puma status"

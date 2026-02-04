@@ -201,10 +201,15 @@ This keeps cached content fresh without requiring cache invalidation logic.
 
 Creates the first admin user with:
 - Username: whatever you specified
-- Password: `changeme123`
+- Password: randomly generated (24-character)
 - Admin + moderator privileges
 
-**Change the password immediately after first login.**
+The admin password and Rails master key are written to `/root/lobsters-credentials.txt` (readable only by root). Retrieve the credentials from that file after deployment, then delete it:
+
+```bash
+sudo cat /root/lobsters-credentials.txt
+sudo rm /root/lobsters-credentials.txt
+```
 
 ## Post-Deployment
 
@@ -370,7 +375,7 @@ sudo systemctl restart lobsters
 | `/srv/lobsters/config/master.key` | Rails encryption key |
 | `/srv/lobsters/config/database.yml` | Database config with production credentials |
 | `/srv/lobsters/storage/` | SQLite databases for cache and queue |
-| `/srv/lobsters/public/cache/` | Page cache for logged-out visitors |
+| `/root/lobsters-credentials.txt` | Admin password + master key (delete after reading) |
 | `/srv/lobsters/log/rails.log` | Application log |
 | `/srv/lobsters/log/solid_queue.log` | Background job log |
 | `/etc/systemd/system/lobsters.service` | Systemd unit |
@@ -383,9 +388,10 @@ After deployment:
 
 - [ ] `systemctl status lobsters` shows `active (running)`
 - [ ] `systemctl status caddy` shows `active (running)`
-- [ ] Homepage loads at `http://<ip>` or `https://<domain>`
-- [ ] Can log in with the admin account
-- [ ] Change the admin password
+- [ ] Homepage redirects to `/login` (members-only)
+- [ ] Retrieve admin credentials: `sudo cat /root/lobsters-credentials.txt`
+- [ ] Log in with the admin account
+- [ ] Delete credentials file: `sudo rm /root/lobsters-credentials.txt`
 - [ ] Submit a test story and verify it appears
 - [ ] Check `journalctl -u lobsters` for any errors
 - [ ] Test email delivery (try password reset or invitation)
