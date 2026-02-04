@@ -52,3 +52,8 @@ lib/tasks/deploy.rake
 storage/
 
 /config/master.key
+
+# claude code related files
+.agents/
+.claude/
+
