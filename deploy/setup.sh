@@ -95,7 +95,7 @@ apt-get upgrade -y -qq
 # Ruby build dependencies + runtime deps
 apt-get install -y -qq \
   autoconf bison build-essential libssl-dev libyaml-dev libreadline-dev \
-  zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev rustc \
+  zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev libclang-dev \
   libjemalloc-dev libvips-dev \
   git curl wget unzip \
   apt-transport-https ca-certificates gnupg lsb-release
@@ -125,6 +125,10 @@ info "Creating $DEPLOY_USER system user..."
 if ! id "$DEPLOY_USER" &>/dev/null; then
   useradd --system --create-home --shell /bin/bash "$DEPLOY_USER"
 fi
+
+# ─── Install Rust via rustup (needed for commonmarker gem) ───────────────────
+info "Installing Rust toolchain for $DEPLOY_USER..."
+sudo -u "$DEPLOY_USER" bash -c 'curl --proto "=https" --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
 
 # ─── Phase 1b: Install rbenv + Ruby ──────────────────────────────────────────
 info "Installing rbenv and Ruby $RUBY_VERSION (this will take a while)..."
@@ -258,6 +262,7 @@ DBCONFIG
 # Bundle install
 info "Running bundle install..."
 sudo -u "$DEPLOY_USER" bash -c "
+  source \"\$HOME/.cargo/env\"
   export PATH=\"\$HOME/.rbenv/bin:\$HOME/.rbenv/shims:\$PATH\"
   eval \"\$(rbenv init - bash)\"
   cd '$APP_DIR'
