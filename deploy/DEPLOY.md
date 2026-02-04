@@ -13,6 +13,8 @@ Internet → Caddy (ports 80/443) → Puma (localhost:3000) → MariaDB + SQLite
 
 Single-server setup: Caddy handles TLS termination and reverse-proxies to Puma. MariaDB stores the primary data. SQLite handles the cache store (Solid Cache) and background job queue (Solid Queue, running inside Puma).
 
+**Members-only**: The site requires login to view any page. Unauthenticated visitors are redirected to the login page. Users must be invited by an existing member (or the admin) to create an account.
+
 ## Prerequisites
 
 ### 1. EC2 Instance
@@ -33,11 +35,27 @@ Attach an Elastic IP to the instance so the public IP survives stop/start cycles
 3. Note the SMTP endpoint for your region (e.g. `email-smtp.us-east-1.amazonaws.com`)
 4. If still in the SES sandbox, request production access — sandbox only allows sending to verified addresses
 
-### 4. Domain (optional, can do later)
+### 4. Domain & SSL
 
-Point an **A record** at the Elastic IP. Caddy will automatically obtain a Let's Encrypt certificate once DNS propagates.
+A domain is strongly recommended — without one, the site runs over plain HTTP, meaning passwords and session cookies are sent in cleartext.
 
-If you don't have a domain yet, the script can run with just the IP address (HTTP only, no SSL).
+**Option A: Register a domain via Route 53 (recommended)**
+
+1. Go to **Route 53 Console** → **Registered domains** → **Register domains**
+2. Search for a cheap domain (`.click`, `.link`, `.net` etc. — some start at ~$3/year)
+3. Complete the registration (can take a few minutes to activate)
+4. Route 53 automatically creates a **hosted zone** for the domain
+5. In the hosted zone, click **Create record**:
+   - **Record name**: leave blank (root domain) or enter a subdomain like `news`
+   - **Record type**: `A`
+   - **Value**: your Elastic IP address
+   - **TTL**: `300`
+6. Wait for DNS propagation (usually under 5 minutes for a new domain)
+7. Use the domain as `LOBSTERS_DOMAIN` when running the setup script — Caddy will automatically obtain a Let's Encrypt certificate
+
+**Option B: Run with just an Elastic IP (HTTP only, no SSL)**
+
+The script can run with just the IP address. This works but is **not recommended for regular use** — all traffic including login credentials is unencrypted. Fine for initial testing, but switch to a domain before sharing with others.
 
 ## Running the Setup Script
 
@@ -167,9 +185,7 @@ journalctl -u lobsters --since "1 hour ago"  # recent logs
 
 **With an IP address**: Caddy serves plain HTTP on port 80 (Let's Encrypt doesn't issue certs for IP addresses).
 
-The Caddyfile also:
-- Serves cached pages directly from disk for logged-out visitors (the `lobster_trap` cookie indicates a logged-in session)
-- Adds security headers (HSTS, X-Content-Type-Options, X-Frame-Options)
+The Caddyfile adds security headers (HSTS, X-Content-Type-Options, X-Frame-Options).
 
 ### Phase 7: Page Cache Cron
 

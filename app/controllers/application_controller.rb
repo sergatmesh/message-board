@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   before_action :mini_profiler
   before_action :set_traffic_style
   before_action :remove_unknown_cookies
+  before_action :require_logged_in_user
   after_action :clear_session_cookie
 
   SESSION_DEFAULT_KEYS = %w[session_id _csrf_token]

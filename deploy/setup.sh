@@ -361,19 +361,6 @@ if [[ "$IS_IP" = true ]]; then
         Referrer-Policy "strict-origin-when-cross-origin"
     }
 
-    # Serve page cache for logged-out visitors
-    @cached {
-        not header_regexp Cookie lobster_trap
-        file {
-            root ${APP_DIR}/public/cache
-            try_files {path}.html {path}/index.html
-        }
-    }
-    handle @cached {
-        root * ${APP_DIR}/public/cache
-        file_server
-    }
-
     log {
         output file /var/log/caddy/access.log
     }
@@ -390,19 +377,6 @@ ${LOBSTERS_DOMAIN} {
         X-Content-Type-Options "nosniff"
         X-Frame-Options "SAMEORIGIN"
         Referrer-Policy "strict-origin-when-cross-origin"
-    }
-
-    # Serve page cache for logged-out visitors
-    @cached {
-        not header_regexp Cookie lobster_trap
-        file {
-            root ${APP_DIR}/public/cache
-            try_files {path}.html {path}/index.html
-        }
-    }
-    handle @cached {
-        root * ${APP_DIR}/public/cache
-        file_server
     }
 
     log {

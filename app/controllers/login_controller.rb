@@ -13,6 +13,7 @@ class LoginFailedError < StandardError; end
 class LoginPasswordTooLong < StandardError; end
 
 class LoginController < ApplicationController
+  skip_before_action :require_logged_in_user
   before_action :authenticate_user
   before_action :check_for_read_only_mode, except: [:index]
   before_action :require_no_user_or_redirect,
