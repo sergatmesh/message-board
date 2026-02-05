@@ -23,12 +23,12 @@
 	--opacity-deleted: 0.6;
 
 	/* backgrounds and foregrounds */
-	--color-bg-accent: rgb(172 19 13);
-	--color-bg-target: rgb(255 252 215);
+	--color-bg-accent: rgb(37 99 205);
+	--color-bg-target: rgb(230 242 255);
 
-	--color-fg-link: rgb(28 89 209);
-	--color-fg-link-visited: rgb(95 134 212);
-	--color-fg-accent: rgb(172 19 13); /* red as in lobste.rs */
+	--color-fg-link: rgb(37 99 205);
+	--color-fg-link-visited: rgb(85 130 200);
+	--color-fg-accent: rgb(37 99 205); /* blue accent */
 	--color-fg-negative: rgb(139 0 0); /* red as in warning */
 	--color-fg-affirmative: rgb(0 128 0);
 	--color-fg-author: rgb(96 129 189);
@@ -64,13 +64,13 @@
 	--color-flash-bg-success: #dff0d8;
 	--color-flash-bg-notice: #cce6ee;
 
-	--color-lobsters-fg-has-suggestions: #bd6060;
+	--color-lobsters-fg-has-suggestions: #5b7fbf;
 
-	--color-lobsters-tag-special-bg: #f9ddde;
-	--color-lobsters-tag-special-border: #f0b2b8;
+	--color-lobsters-tag-special-bg: #dde8f9;
+	--color-lobsters-tag-special-border: #a8c4e8;
 
-	--color-lobsters-hat-sysop-crown-fill: #ddc7c7;
-	--color-lobsters-hat-sysop-brim-stroke: #bbb2b2;
+	--color-lobsters-hat-sysop-crown-fill: #c7d4e6;
+	--color-lobsters-hat-sysop-brim-stroke: #b2bdd0;
 
 	/* mobile */
 	--color-mobile-story-comments-bubble-fill: #ccc;

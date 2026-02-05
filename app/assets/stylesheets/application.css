@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 /*
 Lobsters doesn't use CSS features until the "Widely available" Baseline standard:
@@ -38,6 +39,11 @@ But I make an unprincipled exception for :has because it solves so many big prob
 	/* dimensions */
 	--comment-controls-height: 1.2lh;
 	--input-outline-width: 2px;
+
+	/* border radius */
+	--radius-sm: 6px;
+	--radius-md: 8px;
+	--radius-lg: 12px;
 }
 
 /* generics */
@@ -54,9 +60,11 @@ html {
 }
 
 body, textarea, input, button {
-	font-family: "helvetica neue", arial, sans-serif;
+	font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	color: var(--color-fg);
-	line-height: 1.45em;
+	line-height: 1.55em;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -68,6 +76,12 @@ body {
 a {
 	color: var(--color-fg-link);
 	cursor: pointer;
+	text-decoration: none;
+	transition: color 0.2s ease, opacity 0.2s ease;
+}
+a:hover {
+	text-decoration: underline;
+	opacity: 0.85;
 }
 
 li.story div.details span.link a:visited {
@@ -75,9 +89,24 @@ li.story div.details span.link a:visited {
 }
 
 h1 {
-	font-weight: bold;
+	font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+	font-weight: 700;
 	margin: 0.5em 0 1em 0;
 	padding: 0;
+	letter-spacing: -0.03em;
+	font-size: 1.6em;
+}
+h2 {
+	font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+	font-weight: 700;
+	letter-spacing: -0.02em;
+	font-size: 1.25em;
+}
+h3 {
+	font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+	font-size: 1.1em;
 }
 
 .clear {
@@ -87,13 +116,22 @@ h1 {
 a.tag {
 	background-color: var(--color-tag-bg);
 	border: 1px solid var(--color-tag-border);
-	border-radius: 5px;
+	border-radius: 9999px;
 	color: var(--color-fg-contrast-10);
 	font-size: var(--font-size-tags);
+	font-weight: 600;
+	letter-spacing: 0.02em;
+	text-transform: lowercase;
 	margin-left: 0.25em;
-	padding: 0px 0.4em 1px 0.4em;
+	padding: 2px 0.75em 3px 0.75em;
 	text-decoration: none;
 	white-space: nowrap;
+	transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+a.tag:hover {
+	transform: translateY(-1px);
+	box-shadow: 0 2px 4px var(--color-shadow-10);
+	text-decoration: none;
 }
 a.tag.filtered {
 	border: 1.5px dotted;
@@ -117,19 +155,25 @@ a.tag_announce, a.tag_ask, a.tag_show, a.tag_interview {
 .hat {
 	width: min-content;
 	border-bottom: 6px solid var(--color-hat-brim-stroke);
-	border-radius: 0px 0px 4px 4px;
-	padding: 1px 8px;
+	border-radius: 0px 0px 6px 6px;
+	padding: 1px 10px;
 	vertical-align: super;
 	white-space: nowrap;
+	transition: transform 0.15s ease;
+}
+.hat:hover {
+	transform: translateY(-1px);
 }
 .hat .crown {
 	background-color: var(--color-hat-crown-fill);
 	border: 1px solid var(--color-hat-crown-stroke);
 	border-bottom: 0;
-	border-radius: 5px 5px 0px 0px;
-	padding: 3px 5px 2px 5px;
+	border-radius: 6px 6px 0px 0px;
+	padding: 3px 7px 2px 7px;
 	text-decoration: none;
 	vertical-align: text-top;
+	font-size: 0.85em;
+	letter-spacing: 0.02em;
 }
 
 .hat .crown, .hat a {
@@ -157,13 +201,28 @@ div.shorten_first_p p:first-child {
 }
 
 hr {
-	/* make it lighter than the browser's default */
 	border: none;
 	height: 1px;
-	background-color: var(--color-fg-shape);
+	background: linear-gradient(to right, transparent, var(--color-fg-shape), transparent);
+	margin: 1.5em 0;
 }
 pre {
 	overflow-x: auto;
+	background-color: var(--color-box-bg-shaded);
+	border: 1px solid var(--color-shadow-10);
+	border-radius: var(--radius-md);
+	padding: 1em 1.25em;
+	line-height: 1.5;
+}
+code {
+	font-family: "SF Mono", "Fira Code", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+	font-size: 0.875em;
+}
+:not(pre) > code {
+	background-color: var(--color-box-bg-shaded);
+	border-radius: var(--radius-sm);
+	padding: 0.15em 0.4em;
+	font-size: 0.85em;
 }
 
 /* default form styling */
@@ -176,16 +235,18 @@ textarea {
 	color: var(--color-fg-contrast-10);
 	font: inherit;
 	background-color: var(--color-box-bg);
-	padding: 3px 5px;
+	padding: 5px 8px;
 	margin: var(--input-outline-width);
 }
 input:focus,
 button:focus,
 select:focus,
 textarea:focus {
-	outline: var(--input-outline-width) solid var(--color-box-border-focus);
+	outline: var(--input-outline-width) solid var(--color-fg-link);
+	outline-offset: 1px;
 	border-color: transparent;
 	color: var(--color-fg);
+	box-shadow: 0 0 0 3px rgb(var(--base-fg) / 5%);
 }
 textarea {
 	resize: vertical;
@@ -198,6 +259,17 @@ input[type="number"],
 input[type="url"],
 textarea {
 	border: 1px solid var(--color-box-border);
+	border-radius: var(--radius-md);
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input[type="text"]:hover,
+input[type="search"]:hover,
+input[type="password"]:hover,
+input[type="email"]:hover,
+input[type="number"]:hover,
+input[type="url"]:hover,
+textarea:hover {
+	border-color: var(--color-box-border-focus);
 }
 input[type="checkbox"] {
 	margin-top: 0.5em;
@@ -244,15 +316,19 @@ input[type="reset"],
 input[type="submit"],
 a.button {
 	background-color: var(--color-button-bg);
-	border-bottom-color: var(--color-fg-shape);
 	border: 1px solid var(--color-box-border);
+	border-radius: var(--radius-md);
 	color: var(--color-fg);
 	cursor: pointer;
 	display: inline-block;
-	line-height: 18px;
-	padding: 2px 10px 2px 10px;
+	font-weight: 600;
+	font-size: 0.875em;
+	letter-spacing: 0.01em;
+	line-height: 1.25;
+	padding: 8px 18px;
 	text-align: center;
 	text-decoration: none;
+	transition: all 0.2s ease;
 }
 button:first-child,
 input[type="button"]:first-child,
@@ -267,12 +343,19 @@ input[type="submit"]:hover {
 	color: var(--color-fg-contrast-10);
 	text-decoration: none;
 	background-color: var(--color-button-bg-shaded);
+	box-shadow: 0 2px 8px var(--color-shadow-10);
+	transform: translateY(-1px);
 }
 
 select {
 	border: 1px solid var(--color-box-border);
+	border-radius: var(--radius-md);
 	margin-top: 3px;
 	min-width: 100px;
+	transition: border-color 0.2s ease;
+}
+select:hover {
+	border-color: var(--color-box-border-focus);
 }
 select::-moz-focus-inner {
 	border: 0;
@@ -291,6 +374,7 @@ button.deletion,
 input.deletion {
 	color: var(--color-fg-negative);
 	border: 1px solid var(--color-fg-negative);
+	border-radius: var(--radius-sm);
 }
 
 summary {
@@ -342,7 +426,7 @@ header {
 }
 
 #logo {
-	background: transparent url(logo-transparent.svg) no-repeat center;
+	background: transparent url(code-logo-transparent.svg) no-repeat center;
 	flex: 0 0 16px; /* width; no padding l/r */
 	float: left;
 	display: block;
@@ -361,8 +445,9 @@ header {
 	}
 
 	#logo:before {
-		content: "L";
-		font-family: serif;
+		content: "</>";
+		font-family: monospace;
+		font-size: 8px;
 		color: var(--color-bg);
 	}
 
@@ -392,8 +477,16 @@ header#nav nav.links {
 }
 header#nav a, header#subnav a, header#subnav input[type="submit"] {
 	color: var(--color-fg-contrast-6);
-	font-weight: bold;
-	margin: 0 0.25rem;
+	font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+	font-weight: 600;
+	font-size: 0.9em;
+	letter-spacing: -0.01em;
+	margin: 0 0.4rem;
+	text-decoration: none;
+	transition: color 0.2s ease;
+}
+header#nav a:hover, header#subnav a:hover {
+	color: var(--color-fg);
 	text-decoration: none;
 }
 header#subnav {
@@ -408,8 +501,9 @@ header#subnav a.current_page:last-child {
 	margin-right: 0.375rem;
 }
 header a.current_page {
-	border-bottom: 0.25em solid var(--color-fg-accent);
-	padding: 0 0.25rem 0.25rem;
+	border-bottom: 0.2em solid var(--color-fg-accent);
+	padding: 0 0.25rem 0.3rem;
+	color: var(--color-fg) !important;
 }
 header#nav #logo, header#nav #logo ~ a {
 	margin-left: 0;
@@ -430,12 +524,20 @@ header .inbox_unread {
 footer {
 	box-sizing: border-box;
 	display: flex;
-	padding: 2em 0.5em;
+	padding: 2.5em 0.5em;
 	justify-content: space-between;
 	width: 100%;
+	border-top: 1px solid var(--color-shadow-10);
+	margin-top: 2em;
 }
 footer a {
 	color: var(--color-fg-contrast-4-5);
+	font-size: 0.875em;
+	transition: color 0.2s ease;
+}
+footer a:hover {
+	color: var(--color-fg);
+	text-decoration: none;
 }
 footer nav a {
 	padding-left: 0.75em;
@@ -445,13 +547,18 @@ footer nav a {
 
 /* other specifics */
 div#gravatar {
-	border: 2px solid var(--color-box-bg);
+	border: 3px solid var(--color-box-bg);
 	border-radius: 100% 100%;
-	box-shadow: 0 1px 4px var(--color-shadow-80);
+	box-shadow: 0 2px 12px var(--color-shadow-25);
 	float: right;
 	height: 100px;
 	width: 100px;
 	margin-bottom: 1rem;
+	transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+div#gravatar:hover {
+	box-shadow: 0 4px 16px var(--color-shadow-25);
+	transform: scale(1.03);
 }
 div#gravatar img {
 	border-radius: 50px;
@@ -523,6 +630,10 @@ div.voters {
 	align-items: center;
 	justify-self: center;
 	text-decoration: none;
+	transition: transform 0.15s ease;
+}
+.upvoter:hover {
+	transform: scale(1.15);
 }
 .upvoter:focus { outline: none; } /* don't outline after upvote click */
 .upvoter:focus-visible { outline: 2px solid var(--color-fg-link); } /* do outline when tabbing */
@@ -531,15 +642,24 @@ li.story {
 	clear: both;
 }
 ol.stories li.story div.story_liner {
-	padding-top: 0.25em;
-	padding-bottom: 0.25em;
+	padding: 0.75em 0.5em;
 	word-break: break-word;
+	border-bottom: 1px solid var(--color-shadow-10);
+	border-radius: var(--radius-sm);
+	transition: background-color 0.15s ease;
+}
+ol.stories li.story div.story_liner:hover {
+	background-color: var(--color-box-bg-shaded);
 }
 .comment {
 	clear: both;
-	padding-top: 0.4em;
-	padding-bottom: 0.4em;
+	padding: 0.5em 0.4em;
 	position: relative;
+	border-radius: var(--radius-sm);
+	transition: background-color 0.15s ease;
+}
+.comment:hover {
+	background-color: var(--color-box-bg-shaded);
 }
 
 .comment a {
@@ -596,7 +716,10 @@ supports it:  https://caniuse.com/?search=%3Ahas
 }
 
 li .link {
-	font-weight: bold;
+	font-family: "Plus Jakarta Sans", "Inter", sans-serif;
+	font-weight: 700;
+	font-size: 1.05em;
+	letter-spacing: -0.01em;
 	vertical-align: middle;
 }
 
@@ -694,12 +817,13 @@ li .byline > img.avatar {
 	margin-bottom: -5px;
 }
 li .byline img.avatar {
-	border-radius: 8px;
-	height: 16px;
+	border-radius: 50%;
+	height: 18px;
 	margin-bottom: 2px;
-	margin-right: 2px;
+	margin-right: 3px;
 	vertical-align: middle;
-	width: 16px;
+	width: 18px;
+	box-shadow: 0 1px 2px var(--color-shadow-10);
 }
 li.story .byline {
 	margin-top: 1px;
@@ -824,12 +948,20 @@ div.page_link_buttons {
 div.page_link_buttons a,
 div.page_link_buttons span {
 	border: 1px solid var(--color-box-border);
+	border-radius: var(--radius-md);
 	background-color: var(--color-button-bg);
 	color: var(--color-fg-contrast-7-5);
-	padding: 0.25em 0.5em;
+	padding: 0.35em 0.65em;
 	font-weight: bold;
 	text-decoration: none;
 	margin-left: 0.5em;
+	transition: all 0.2s ease;
+}
+div.page_link_buttons a:hover {
+	background-color: var(--color-button-bg-shaded);
+	box-shadow: 0 2px 4px var(--color-shadow-10);
+	transform: translateY(-1px);
+	text-decoration: none;
 }
 div.page_link_buttons a.cur,
 div.page_link_buttons span {
@@ -877,9 +1009,11 @@ div.comment_text blockquote,
 .markdown_help blockquote,
 div.story_text blockquote {
 	font-style: italic;
-	margin: 0.25em 0 0 0.5em;
-	padding: 0 0 0 1em;
-	border-left: 2px solid var(--color-fg-contrast-5);
+	margin: 0.75em 0 0.75em 0.5em;
+	padding: 0.5em 0.5em 0.5em 1.25em;
+	border-left: 4px solid var(--color-fg-link);
+	border-radius: 0 var(--radius-md) var(--radius-md) 0;
+	background-color: var(--color-box-bg-shaded);
 }
 
 /* un-italicize italics inside a blockquote */
@@ -930,7 +1064,8 @@ div.comment_text code {
 	left: -0.125rem;
 	width: 100px;
 	border: 1px solid var(--color-box-border);
-	border-bottom: 0;
+	border-radius: var(--radius-md);
+	overflow: hidden;
 	z-index: 15;
 }
 #flag_dropdown a, .archive-dropdown a {
@@ -1153,10 +1288,17 @@ td.warned div, td.unwarned div {
 
 /* data tables */
 
+table.data {
+	border-collapse: separate;
+	border-spacing: 0;
+	border: 1px solid var(--color-table-header-border);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	box-shadow: 0 1px 3px var(--color-shadow-10);
+}
 table.data th {
 	background-color: var(--color-table-header-bg);
 	border-bottom: 1px solid var(--color-table-header-border);
-	border-top: 1px solid var(--color-table-header-border);
 	text-align: left;
 }
 table.data th img {
@@ -1380,13 +1522,13 @@ div.flash-notice,
 div.flash-success,
 div.user-stats {
 	position: relative;
-	padding: 7px 15px;
+	padding: 12px 20px;
 	margin-bottom: 18px;
-	border-color: var(--color-shadow-10) var(--color-shadow-10) var(--color-shadow-25);
+	border-color: var(--color-shadow-10);
 	border-width: 1px;
 	border-style: solid;
-	border-radius: 4px;
-	box-shadow: inset 0 1px 0 var(--color-light-25);
+	border-radius: var(--radius-lg);
+	box-shadow: 0 2px 8px var(--color-shadow-10);
 }
 div.flash-error a,
 div.flash-notice a,
@@ -1432,13 +1574,13 @@ div.user-stats h2 {
 #story_holder .ts-control {
 	background-color: var(--color-box-bg);
 	border: 1px solid var(--color-box-border);
-	border-radius: 0px;
+	border-radius: var(--radius-sm);
 	box-shadow: none;
 	box-sizing: border-box;
 	margin-bottom: 2px;
 	padding: 2px 0 0px 5px;
 	/* supposed to be inherited from body, but TS overwrites */
-	font-family: "helvetica neue", arial, sans-serif;
+	font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	color: var(--color-fg);
 	line-height: 1.5rem;
 }
@@ -1489,7 +1631,7 @@ div.user-stats h2 {
 	background: #fff;
 	background-color: var(--color-box-bg);
 	border-color: var(--color-box-border-focus);
-	border-radius: 0 0 4px 4px;
+	border-radius: 0 0 var(--radius-md) var(--radius-md);
 	border-top: 1px solid #aaa;
 	box-shadow: 0 4px rgb(0 0 0 / 15%);
 	margin: 0px;
@@ -1513,7 +1655,7 @@ div.user-stats h2 {
 #story_holder .ts-dropdown .option {
 	color: var(--color-fg);
         /* supposed to be inherited from body, but TS overwrites */
-	font-family: "Helvetica Neue", Arial, sans-serif;
+	font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 	line-height: 80%;
 	margin: 0px;
 	padding: 7px 7px 8px;
@@ -1523,7 +1665,7 @@ div.user-stats h2 {
 /* pushover */
 input[type="submit"].link_post.pushover_button {
 	box-sizing: border-box;
-	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAJQCeAPHNVUx7AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3wEPAh02ee0QVwAAACZpVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOV5F9bAAABqElEQVQ4y62TvUtbURjGf+fek2vQpMF2ED9QkfpR6VLaDoIEF0UKWQRBQ+yQP6GDU0Xw4y/obOgg6dDSJVS61MlBcXFQB6M1BsF+IES9NnrzcRy8xpvrBwH7bOflfc553+d5jsCF9tiRDwgBEaDXLi8B80AiGQ2Yzn7hIo8Cce5HOBkNfLo6aA7ydAVkgLjdez3BrS8rRbBJEmyU+AyBVVDE1i1SJ6psEmHvfOLktj0SjL/2snKQx8wpNg+LBJt0RjoN+j6bqOvN/ZotWAldtYK5gWpmV84YbPUw2ePlb7bI73+Kep+OLFONkGarXcK7l16+7+V57BW8qJMs7Ob5k4VQm4fVXzlyquyGiHRYBcC+WWQxnSP63AAgtn7O0FNJ9xOd0W+nbkF7pbsytXxOQw30N0t2MgX6Wzy8qtMJL5zy81jdsETaIXnjLL7trkLqGl+2svxI5/mwZt1l6ZJmJ6yEGqkYbveQOioQ2yiz7TbMa0DCWRnuMPBXaXzcsJx23YWEZmc7fJkqxdgzg8xZka/bFhVE2hSuKL+nMswko4GJ//KZxEO/8wVmfpjJTWeCTQAAAABJRU5ErkJggg==) 2px 2px no-repeat, linear-gradient(var(--color-fg-gradient-lit), var(--color-fg-gradient-shadowed));
+	background: url(pushover.png) 2px 2px no-repeat, linear-gradient(var(--color-fg-gradient-lit), var(--color-fg-gradient-shadowed));
 	border: 1px solid var(--color-box-border);
 	border-radius: 3px;
 	color: var(--color-fg);
@@ -1551,7 +1693,7 @@ input[type="submit"].link_post.pushover_button {
 }
 .searchq {
 	background: var(--color-box-bg-shaded);
-	border-radius: 4px;
+	border-radius: var(--radius-sm);
 	font-family: monospace;
 	padding: 2px;
 }
@@ -1623,7 +1765,10 @@ input[type="submit"].link_post.pushover_button {
 
 	header#nav {
 		margin: 1em 0 0.5rem 0;
-		padding: 5px 10px;
+		padding: 10px 16px;
+		border-radius: var(--radius-lg);
+		background-color: var(--color-box-bg-shaded);
+		box-shadow: 0 1px 3px var(--color-shadow-10), 0 0 0 1px var(--color-shadow-10);
 	}
 	header#nav nav.links {
 		flex-flow: row wrap;
