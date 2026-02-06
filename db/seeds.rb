@@ -6,11 +6,12 @@ User.create!(
   password_confirmation: pwd
 )
 
+admin_pwd = SecureRandom.base58
 User.create!(
   username: "test",
   email: "test@example.com",
-  password: "test",
-  password_confirmation: "test",
+  password: admin_pwd,
+  password_confirmation: admin_pwd,
   is_admin: true,
   is_moderator: true,
   karma: [
@@ -26,7 +27,7 @@ c = Category.create!(category: "Category")
 Tag.create!(category: c, tag: "test")
 
 Rails.logger.debug "created:"
-Rails.logger.debug "  * an admin with username/password of test/test"
+Rails.logger.debug "  * an admin with username 'test' and password '#{admin_pwd}'"
 Rails.logger.debug "  * inactive-user for disowned comments by deleted users"
 Rails.logger.debug "  * a test tag"
 Rails.logger.debug
