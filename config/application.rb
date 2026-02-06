@@ -107,15 +107,15 @@ class << Rails.application
   end
 
   def domain
-    "lobste.rs"
+    "mostlyautonomous.co.uk"
   end
 
   def name
-    "Lobsters"
+    "Mostly Autonomous"
   end
 
   def og_description
-    "A computing-focused community centered around link aggregation and discussion."
+    "An AI coding community centered around link aggregation and discussion."
   end
 
   # to force everyone to be considered logged-out (without destroying

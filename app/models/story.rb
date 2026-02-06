@@ -259,8 +259,8 @@ class Story < ApplicationRecord
       check_already_posted_recently?
       check_not_banned_domain
       check_not_banned_origin
-      check_not_new_domain_from_new_user
-      # This would probably have a too-high false-positive rate, I want to have approvals first.
+      # Disabled new user restrictions - all invited users can post freely
+      # check_not_new_domain_from_new_user
       # check_not_new_origin_from_new_user
       check_not_brigading
       check_not_pushcx_stream
@@ -322,9 +322,10 @@ class Story < ApplicationRecord
 
     if most_recent_similar&.is_recent?
       errors.add(:url, "has already been submitted within the past #{RECENT_DAYS} days")
-    elsif user&.is_new? && most_recent_similar
-      errors.add(:url, "cannot be resubmitted by new users")
     end
+    # Disabled - allow new users to resubmit older stories
+    # elsif user&.is_new? && most_recent_similar
+    #   errors.add(:url, "cannot be resubmitted by new users")
   end
 
   def check_not_new_domain_from_new_user
@@ -602,27 +603,15 @@ class Story < ApplicationRecord
   def check_tags
     u = editor || user
 
-    if u&.is_new? &&
-        (unpermitted = tags.select { |t| t.permit_by_new_users == false }).any?
-      tags_str = unpermitted.map(&:tag).to_sentence
-      errors.add :base, <<-EXPLANATION
-        New users can't submit stories with the tag(s) #{tags_str}
-        because they're for meta discussion or prone to off-topic stories.
-        If a tag is appropriate for the story, leaving it off to skirt this
-        restriction can earn a ban.
-      EXPLANATION
-      ModNote.tattle_on_new_user_tagging!(self)
-      return
-    end
+    # Disabled new user tag restrictions - all invited users can post freely
+    # if u&.is_new? &&
+    #     (unpermitted = tags.select { |t| t.permit_by_new_users == false }).any?
+    #   ...
+    # end
 
     tags.each do |t|
       if !t.can_be_applied_by?(u) && t.privileged?
         raise "#{u.username} does not have permission to use privileged tag #{t.tag}"
-      elsif !t.can_be_applied_by?(u) && !t.permit_by_new_users?
-        errors.add(:base, "New users can't submit #{t.tag} stories, please wait. " \
-          "If the tag is appropriate, leaving it off to skirt this restriction is a bad idea.")
-        ModNote.tattle_on_story_domain!(self, "new user with protected tags")
-        raise "#{u.username} is too new to use tag #{t.tag}"
       end
     end
 
