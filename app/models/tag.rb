@@ -67,16 +67,13 @@ class Tag < ApplicationRecord
   end
 
   def user_can_filter?(user)
-    active? && (!privileged? || user.try(:is_moderator?))
+    # Allow any user to filter any active tag
+    active?
   end
 
   def can_be_applied_by?(user)
-    if privileged?
-      !!user.try(:is_moderator?)
-    # do include tags they can't use so they submit and get error
-    else
-      true
-    end
+    # Allow any logged-in user to apply any tag
+    true
   end
 
   def filtered_count
