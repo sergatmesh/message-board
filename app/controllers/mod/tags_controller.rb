@@ -1,7 +1,7 @@
 # typeed: false
 
 class Mod::TagsController < Mod::ModController
-  before_action :require_logged_in_admin
+  before_action :require_logged_in_user
 
   def new
     @tag = Tag.new

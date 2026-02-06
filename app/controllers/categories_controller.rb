@@ -1,7 +1,7 @@
 # typed: false
 
 class CategoriesController < ApplicationController
-  before_action :require_logged_in_admin
+  before_action :require_logged_in_user
 
   def new
     @category = Category.new
