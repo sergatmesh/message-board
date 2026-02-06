@@ -1050,6 +1050,14 @@ div.comment_text code {
 	line-height: 1.2em;
 }
 
+div.comment_text img,
+div.story_text img {
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--radius-md);
+	margin: 0.5em 0;
+}
+
 .dropdown_parent {
 	position: relative;
 }
