@@ -1051,8 +1051,11 @@ div.comment_text code {
 }
 
 div.comment_text img,
-div.story_text img {
+div.story_text img,
+.preview img {
+	display: block;
 	max-width: 100%;
+	width: auto;
 	height: auto;
 	border-radius: var(--radius-md);
 	margin: 0.5em 0;
