@@ -575,18 +575,8 @@ class Story < ApplicationRecord
   end
 
   def can_have_images?
-    # doesn't test self.editor so a user can't trick a mod into editing a
-    # story to enable an image
-    return false if user.nil?
-
-    return user.is_moderator? if previewing
-
-    current_time = Time.current
-    check_at = created_at || current_time
-
-    Hat.where(user_id: user.id, modlog_use: true).any? do |hat|
-      check_at.between?(hat.created_at, hat.doffed_at || current_time)
-    end
+    # Allow all logged-in users to embed images (members-only forum)
+    true
   end
 
   def can_have_suggestions_from_user?(user)
