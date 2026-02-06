@@ -319,7 +319,7 @@ class User < ApplicationRecord
   end
 
   def can_invite?
-    !banned_from_inviting? && can_submit_stories?
+    !banned_from_inviting?
   end
 
   def can_offer_suggestions?
